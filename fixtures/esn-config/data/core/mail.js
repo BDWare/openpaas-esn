@@ -3,8 +3,8 @@
 module.exports = function() {
 
   var mailInBrowser = typeof process.env.MAIL_BROWSER === 'undefined',
-    noreply = process.env.MAIL_NO_REPLY || 'noreply@open-paas.org',
-    feedback = process.env.MAIL_FEEDBACK || 'feedback@open-paas.org',
+    noreply = process.env.MAIL_NO_REPLY || 'noreply@internetapi.cn',
+    feedback = process.env.MAIL_FEEDBACK || 'feedback@internetapi.cn',
     smtpHost = process.env.SMTP_HOST || 'localhost',
     smtpPort = +process.env.SMTP_PORT || 25;
 

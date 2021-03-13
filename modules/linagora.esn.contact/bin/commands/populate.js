@@ -9,7 +9,7 @@ const path = require('path');
 const commons = require('../../../../bin/commons');
 
 const DEFAULT_BASE_URL = 'http://localhost:8080';
-const DEFAULT_LOGIN = 'admin@open-paas.org';
+const DEFAULT_LOGIN = 'admin@internetapi.cn';
 const DEFAULT_PASSWORD = 'secret';
 
 const command = {

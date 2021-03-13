@@ -22,7 +22,7 @@
 <mailetcontainer enableJmx="true">
 
     <context>
-        <postmaster>postmaster@open-paas.org</postmaster>
+        <postmaster>postmaster@internetapi.cn</postmaster>
     </context>
 
     <spooler>

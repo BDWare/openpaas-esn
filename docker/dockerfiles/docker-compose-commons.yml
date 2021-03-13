@@ -91,7 +91,7 @@ services:
     entrypoint: bash -c "java -Dlogback.configurationFile=/root/conf/logback.xml -Dworking.directory=/root/ -jar james-server.jar"
     image: linagora/james-memory:branch-master
     container_name: esn_james
-    hostname: open-paas.org
+    hostname: internetapi.cn
     ports:
       - "1080:80"
       - "1025:25"
