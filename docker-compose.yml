@@ -4,9 +4,14 @@ services:
 
   esn:
     container_name: esn
-    image: linagora/esn:1.8.0-beta1
-    ports:
-     - "8080:8080"
+    image: linagora/esn:1.9.0-rc6
+    # ports:
+    #  - "8080:8080"
+    networks:
+      - default
+      - web
+    expose:
+      - 8080
     volumes:
       - ./docker/config:/var/www/docker/config:ro
     environment:
@@ -31,12 +36,12 @@ services:
       - ELASTICSEARCH_HOST=elasticsearch
       - ELASTICSEARCH_PORT=9200
       - ELASTICSEARCH_INIT_TIMEOUT=${ELASTICSEARCH_INIT_TIMEOUT}
-      - JMAP_SERVER_HOST=${DOCKER_IP}
-      - JMAP_SERVER_PORT=1080
+      - JMAP_SERVER_HOST=james
+      - JMAP_SERVER_PORT=80
       - MAIL_BROWSER=false
-      - SMTP_HOST=${DOCKER_IP}
-      - SMTP_PORT=1025
-      - JAMES_WEBADMIN_HOST=${DOCKER_IP}
+      - SMTP_HOST=james
+      - SMTP_PORT=25
+      - JAMES_WEBADMIN_HOST=james
       - JAMES_WEBADMIN_PORT=8000
     links:
       - redis
@@ -44,39 +49,65 @@ services:
       - rabbitmq
       - sabre
       - elasticsearch
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.openbaas.entryPoints: web
+      traefik.http.routers.openbaas.tls.certResolver: default
+      traefik.http.routers.openbaas.rule: Host(`openbaas.internetapi.cn`, `ob.internetapi.cn`)
+      traefik.http.routers.openbaas.middlewares: redirectOb@docker
+      traefik.http.middlewares.redirectOb.redirectRegex.regex: ob.internetapi.cn(.*)
+      traefik.http.middlewares.redirectOb.redirectRegex.replacement: openbaas.internetapi.cn$${1}
+
   redis:
     container_name: esn_redis
-    image: redis:latest
-    ports:
-      - "6379:6379"
+    image: redis:6.2.1-alpine3.13 
+    volumes:
+      - redis-data:/data
+    # ports:
+    #   - "6379:6379"
+    expose:
+      - 6379
 
   rabbitmq:
     container_name: esn_rabbitmq
-    image: rabbitmq:3.6.5-management
+    image: rabbitmq:3.8.14-management
     hostname: esn-rabbit
-    ports:
-      - 5672:5672
-      - 15672:15672
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    # ports:
+    #   - 5672:5672
+    #   - 15672:15672
+    expose:
+      - 5672
+      - 15672
 
   mongo:
     container_name: esn_mongo
-    image: mongo:3.2
+    image: mongo:4.4.4
     command: ["mongod", "--smallfiles"]
-    ports:
-      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    # ports:
+    #   - "27017:27017"
+    expose:
+      - 27017
 
   elasticsearch:
     container_name: esn_elasticsearch
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2
-    ports:
-      - "9200:9200"
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.2
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    # ports:
+    #   - "9200:9200"
+    expose:
+      - 9200
     environment:
       - ELASTICSEARCH_INIT_TIMEOUT=${ELASTICSEARCH_INIT_TIMEOUT}
       - discovery.type=single-node
 
   sabre:
     container_name: esn_sabre
-    image: linagora/esn-sabre:1.8.0-beta1
+    image: linagora/esn-sabre:1.9.0-rc6
     ports:
       - "8001:80"
     environment:
@@ -99,20 +130,78 @@ services:
 
   james:
     container_name: esn_james
-    entrypoint: bash -c "java -Dlogback.configurationFile=/root/conf/logback.xml -Dworking.directory=/root/ -jar james-server.jar"
-    image: linagora/james-memory:openpaas-1.7.10-rc2
-    hostname: internetapi.cn
     depends_on:
       - esn # to have configuration ready in shared volume
+      - elasticsearch
+      - cassandra
+      - tika
+      - rabbitmq
+    entrypoint: bash -c "java -Dlogback.configurationFile=/root/conf/logback.xml -Dworking.directory=/root/ -jar james-server.jar"
+    image: linagora/james-rabbitmq-project:openpaas-1.10.0-rc1
+    hostname: internetapi.cn
     ports:
-      - "1080:80"
-      - "1025:25"
-      - "1110:110"
-      - "1143:143"
-      - "1465:465"
-      - "1587:587"
-      - "1993:993"
-      - "8000:8000"
+      # - "1080:80"   # JMAP
+      # - "1025:25"   # SMTP without authentication
+      # - "1110:110"  # POP3
+      # - "1143:143"  # IMAP
+      - "465:465"  # SMTP with authentication and socketTLS enabled
+      - "587:587"  # SMTP with authentication and startTLS enabled
+      - "993:993"  # IMAP with socketTLS enabled
+      # - "8000:8000" # Web Admin interface (unsecured: expose at your own risks)
+    expose:
+      - 80
+      - 25
+      - 110
+      - 143
+      - 465
+      - 587
+      - 993
+      - 8000
     volumes:
       - ./docker/config/james:/root/conf
       - ./docker/config/jwt/public:/root/conf/jwt_publickey
+
+  cassandra:
+    image: cassandra:4.0
+    volumes:
+      - cassandra-data:/var/lib/cassandra
+    # ports:
+    #   - "9042:9042"
+    expose:
+      - 9042
+
+  tika:
+    image: apache/tika:1.25
+    expose:
+      - 9998
+
+volumes:
+  redis-data:
+    driver_opts:
+      type: none
+      device: ${PWD}/../data/redis/data
+      o: bind
+  rabbitmq-data:
+    driver_opts:
+      type: none
+      device: ${PWD}/../data/rabbitmq/data
+      o: bind
+  mongo-data:
+    driver_opts:
+      type: none
+      device: ${PWD}/../data/mongo/data
+      o: bind
+  elasticsearch-data:
+    driver_opts:
+      type: none
+      device: ${PWD}/../data/elasticsearch/data
+      o: bind
+  cassandra-data:
+    driver_opts:
+      type: none
+      device: ${PWD}/../data/cassandra/data
+      o: bind
+
+networks:
+  web:
+    external: true
