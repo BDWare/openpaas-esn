@@ -51,12 +51,12 @@ services:
       - elasticsearch
     labels:
       traefik.enable: "true"
-      traefik.http.routers.openbaas.entryPoints: web
-      traefik.http.routers.openbaas.tls.certResolver: default
-      traefik.http.routers.openbaas.rule: Host(`openbaas.internetapi.cn`, `ob.internetapi.cn`)
-      traefik.http.routers.openbaas.middlewares: redirectOb@docker
-      traefik.http.middlewares.redirectOb.redirectRegex.regex: ob.internetapi.cn(.*)
-      traefik.http.middlewares.redirectOb.redirectRegex.replacement: openbaas.internetapi.cn$${1}
+      traefik.http.routers.openpaas.entryPoints: web
+      traefik.http.routers.openpaas.tls.certResolver: default
+      traefik.http.routers.openpaas.rule: Host(`openpaas.internetapi.cn`, `op.internetapi.cn`)
+      traefik.http.routers.openpaas.middlewares: redirectOp@docker
+      traefik.http.middlewares.redirectOp.redirectRegex.regex: op.internetapi.cn(.*)
+      traefik.http.middlewares.redirectOp.redirectRegex.replacement: openpaas.internetapi.cn$${1}
 
   redis:
     container_name: esn_redis
