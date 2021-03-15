@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build -t linagora/esn .
+docker build -t bdware/esn .
