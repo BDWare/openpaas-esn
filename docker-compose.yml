@@ -4,7 +4,7 @@ services:
 
   esn:
     container_name: esn
-    image: linagora/esn:1.9.0-rc6
+    image: bdware/esn:1.9.0-rc6
     # ports:
     #  - "8080:8080"
     networks:
