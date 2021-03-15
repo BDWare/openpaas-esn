@@ -43,12 +43,6 @@ services:
       - SMTP_PORT=25
       - JAMES_WEBADMIN_HOST=james
       - JAMES_WEBADMIN_PORT=8000
-    links:
-      - redis
-      - mongo
-      - rabbitmq
-      - sabre
-      - elasticsearch
     labels:
       traefik.enable: "true"
       traefik.http.routers.openpaas.entryPoints: web
@@ -84,7 +78,6 @@ services:
   mongo:
     container_name: esn_mongo
     image: mongo:4.4.4
-    command: ["mongod", "--smallfiles"]
     volumes:
       - mongo-data:/data/db
     # ports:

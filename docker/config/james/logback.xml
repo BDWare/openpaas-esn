@@ -12,8 +12,12 @@
                 </encoder>
         </appender>
 
+        <!-- default: <root level="WARN"> -->
         <root level="INFO">
                 <appender-ref ref="CONSOLE" />
         </root>
+
+        <!-- <logger name="org.apache.james" level="INFO" />
+        <logger name="com.datastax.driver.core.QueryLogger.SLOW" level="DEBUG" /> -->
 
 </configuration>
