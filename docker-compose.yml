@@ -159,7 +159,7 @@ services:
       traefik.enable: "true"
       traefik.http.routers.jamesJmap.entryPoints: web
       traefik.http.routers.jamesJmap.tls.certResolver: default
-      traefik.http.routers.jamesJmap.rule: Host(`james.internetapi.cn`) && PathPrefix(`/jmap($|/)`)
+      traefik.http.routers.jamesJmap.rule: Host(`james.internetapi.cn`) && PathPrefix(`/jmap($$|/)`)
       traefik.http.routers.jamesJmap.service: jamesJmap
       traefik.http.services.jamesJmap.loadbalancer.server.port: 80
       traefik.http.routers.jamesWebAdmin.entryPoints: jamesWebAdmin
