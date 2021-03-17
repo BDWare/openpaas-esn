@@ -62,7 +62,7 @@
                 <metricName>mailetContainerErrors</metricName>
             </mailet>
             <mailet match="All" class="Bounce">
-                <onMailetException>ignore</onMailetException>
+                <!-- <onMailetException>ignore</onMailetException> -->
             </mailet>
             <mailet match="All" class="ToRepository">
                 <repositoryPath>cassandra://var/mail/error/</repositoryPath>
@@ -140,7 +140,7 @@
         </processor>
 
         <processor state="local-delivery" enableJmx="true">
-            <!-- <mailet match="All" class="org.apache.james.jmap.mailet.VacationMailet"/> -->
+            <mailet match="All" class="org.apache.james.jmap.mailet.VacationMailet"/>
             <mailet match="All" class="Sieve"/>
             <!-- ICAL pipeline -->
             <mailet match="All" class="StripAttachment">
