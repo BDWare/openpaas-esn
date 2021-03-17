@@ -89,7 +89,7 @@ services:
 
   elasticsearch:
     container_name: esn_elasticsearch
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.2
+    image: elasticsearch:6.6.2
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
     # ports:
@@ -180,7 +180,7 @@ services:
       traefik.http.services.jamesWebAdmin.loadbalancer.server.port: 8000
 
   cassandra:
-    image: cassandra:4.0
+    image: cassandra:3.11.10
     volumes:
       - cassandra-data:/var/lib/cassandra
     # ports:
