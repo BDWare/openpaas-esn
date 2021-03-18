@@ -1,12 +1,12 @@
 {
-  "elasticsearch": "docker.elastic.co/elasticsearch/elasticsearch:7.11.2",
+  "elasticsearch": "elasticsearch:6.6.2",
   "james": "linagora/james-rabbitmq-project:openpaas-1.10.0-rc1",
   "mongodb": "mongo:4.4.4",
   "redis": "redis:6.2.1-alpine3.13",
   "rabbitmq": "rabbitmq:3.8.14-management",
-  "cassandra": "4.0",
+  "cassandra": "3.11.10",
   "tika": "apache/tika:1.25",
   "sabre": "linagora/esn-sabre",
-  "esn": "linagora/esn",
+  "esn": "bdware/esn",
   "esn_base": "linagora/esn-base"
 }

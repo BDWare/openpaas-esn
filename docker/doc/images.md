@@ -5,9 +5,9 @@ We currently use several official images, and some custom ones:
 - Redis: redis:6.2.1-alpine3.13 
 - MongoDB: mongo:4.4.4
 - Apache James: linagora/james-rabbitmq-project
-- Elastic Search: docker.elastic.co/elasticsearch/elasticsearch:7.11.2
+- Elastic Search: elasticsearch:6.6.2
 - RabbitMQ: rabbitmq:3.8.14-management
-- Cassandra: cassandra:4.0
+- Cassandra: cassandra:3.11.10
 - Aoache Tika: apache/tika:1.25
 - Sabre DAV: linagora/esn-sabre
 
